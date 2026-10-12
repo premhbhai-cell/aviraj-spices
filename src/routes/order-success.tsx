@@ -1,0 +1,15 @@
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { useEffect, useState } from "react";
+import { CheckCircle2, MessageCircle, PackageCheck } from "lucide-react";
+import { btn } from "@/components/site/ui";
+import { getLatestOrder, type CustomerOrder } from "@/lib/cart";
+import { waLink } from "@/lib/site";
+
+export const Route = createFileRoute("/order-success")({ component: OrderSuccess, head: () => ({ meta: [{ title: "Order Request | Aviraj Foods and Spices" }] }) });
+function OrderSuccess() {
+  const [order, setOrder] = useState<CustomerOrder | null>(null);
+  useEffect(() => setOrder(getLatestOrder()), []);
+  if (!order) return <div className="container-site section-y text-center"><h1 className="h-section text-primary">No recent order found</h1><Link to="/products" className={`${btn.primary} mt-6`}>Browse products</Link></div>;
+  const message = `AVIRAJ FOODS AND SPICES - COD ORDER REQUEST\nOrder ID: ${order.orderId}\nName: ${order.customer.name}\nMobile: ${order.customer.phone}\nDelivery address: ${order.customer.address}, ${order.customer.city}, ${order.customer.state} - ${order.customer.pincode}\nItems: ${order.items.map(i => `${i.name} (${i.size}) x ${i.qty}`).join(", ")}\nPayment method: Cash on Delivery\nPlease confirm prices, delivery charges and COD availability before dispatch.\nNotes: ${order.customer.notes || "None"}`;
+  return <div className="container-site section-y"><div className="mx-auto max-w-2xl rounded-3xl border border-border bg-card p-6 text-center shadow-card sm:p-10"><div className="mx-auto grid h-16 w-16 place-items-center rounded-full bg-green-50 text-green-700"><CheckCircle2 size={36}/></div><p className="eyebrow mt-5">Request saved on this device</p><h1 className="mt-2 text-3xl font-extrabold text-primary sm:text-4xl">Thank you, {order.customer.name.split(" ")[0]}!</h1><p className="mt-4 leading-7 text-muted-foreground">Your COD order request <strong>{order.orderId}</strong> has been saved in this browser. To send it to Aviraj, tap the WhatsApp button below. The order is not sent to the company until you send that message.</p><div className="mt-6 rounded-2xl bg-secondary p-5 text-left"><div className="flex items-center gap-3"><PackageCheck className="text-primary"/><div><p className="font-bold">Cash on Delivery requested</p><p className="text-sm text-muted-foreground">Final price and delivery availability need confirmation.</p></div></div><div className="mt-4 border-t border-border pt-4 text-sm"><p><strong>Deliver to:</strong> {order.customer.address}, {order.customer.city}, {order.customer.state} - {order.customer.pincode}</p><p className="mt-2"><strong>Phone:</strong> {order.customer.phone}</p><p className="mt-2"><strong>Items:</strong> {order.items.map(i => `${i.name} (${i.size}) × ${i.qty}`).join(", ")}</p></div></div><a href={waLink(message)} target="_blank" rel="noreferrer" className={`${btn.primary} mt-6 w-full !rounded-xl`}><MessageCircle size={18}/> Send order to WhatsApp</a><Link to="/products" className={`${btn.outline} mt-3 w-full !rounded-xl`}>Continue shopping</Link></div></div>;
+}

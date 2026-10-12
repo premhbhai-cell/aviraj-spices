@@ -1,0 +1,21 @@
+AVIRAJ FOODS AND SPICES — RUN LOCALLY (Windows)
+
+1. Extract this ZIP fully.
+2. Open the extracted aviraj-redesign folder in VS Code (the folder containing package.json).
+3. Open Terminal > New Terminal and run:
+
+   npm install
+
+4. After installation finishes, run:
+
+   npm run dev
+
+5. Open the Local URL shown in the terminal (usually http://localhost:5173/).
+
+If npm install was interrupted, run these commands from the same folder:
+
+   npm cache verify
+   npm install
+   npm run dev
+
+Do not run npm commands from the parent folder; package.json is inside aviraj-redesign.
